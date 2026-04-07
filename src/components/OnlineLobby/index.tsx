@@ -18,6 +18,11 @@ export const OnlineLobby: React.FC<OnlineLobbyProps> = ({ onConnect, onCancel })
   const [playerId, setPlayerId] = useState('');
   const [isCreatingRoom, setIsCreatingRoom] = useState(false);
 
+  // Check if server URL is configured
+  const serverUrl = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001';
+  const isLocalServer = serverUrl.includes('localhost');
+  const showServerWarning = isLocalServer && typeof window !== 'undefined' && window.location.hostname !== 'localhost';
+
   const generateRoomId = () => {
     return Math.random().toString(36).substring(2, 8).toUpperCase();
   };
@@ -56,6 +61,21 @@ export const OnlineLobby: React.FC<OnlineLobbyProps> = ({ onConnect, onCancel })
     <div style={styles.overlay}>
       <div style={styles.modal}>
         <h2 style={styles.title}>{t('onlineLobby.title')}</h2>
+
+        {showServerWarning && (
+          <div style={styles.warningBox}>
+            <p style={styles.warningTitle}>⚠️ Server Not Configured</p>
+            <p style={styles.warningText}>
+              Multiplayer server is not configured. The game will try to connect to localhost:3001.
+            </p>
+            <p style={styles.warningText}>
+              To enable online multiplayer in production, please deploy the server and set VITE_SERVER_URL environment variable.
+            </p>
+            <p style={styles.warningLink}>
+              See <a href="https://github.com/antonatlasov115/-----/blob/main/DEPLOYMENT.md" target="_blank" rel="noopener noreferrer" style={styles.link}>DEPLOYMENT.md</a> for instructions.
+            </p>
+          </div>
+        )}
 
         {!isCreatingRoom ? (
           <>
@@ -258,5 +278,35 @@ const styles: Record<string, React.CSSProperties> = {
     color: '#F5E6D3',
     margin: 0,
     textAlign: 'center',
+  },
+  warningBox: {
+    marginBottom: '20px',
+    padding: '16px',
+    backgroundColor: 'rgba(255, 193, 7, 0.2)',
+    borderRadius: '8px',
+    border: '2px solid #FFC107',
+  },
+  warningTitle: {
+    fontSize: '14px',
+    fontWeight: 'bold',
+    color: '#FFC107',
+    marginBottom: '8px',
+    textAlign: 'center',
+  },
+  warningText: {
+    fontSize: '12px',
+    color: '#F5E6D3',
+    marginBottom: '8px',
+    lineHeight: '1.5',
+  },
+  warningLink: {
+    fontSize: '12px',
+    color: '#F5E6D3',
+    marginTop: '8px',
+    textAlign: 'center',
+  },
+  link: {
+    color: '#FFC107',
+    textDecoration: 'underline',
   },
 };
