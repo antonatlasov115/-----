@@ -24,7 +24,6 @@ export const GameControls: React.FC = () => {
     playerRole, 
     networkStatus,
     roomId,
-    chips,
     playerName,
     opponentName,
     resetGame, 

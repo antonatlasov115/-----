@@ -94,7 +94,7 @@ describe('Preservation Tests - Local Move Behavior', () => {
         { x: 200, y: 740 },  // 40px left
       ];
 
-      moves.forEach((targetPosition, index) => {
+      moves.forEach((targetPosition) => {
         const state = useGameStore.getState();
         
         // Reset movedChipsThisTurn to allow runner-1 to move again
