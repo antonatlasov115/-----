@@ -52,7 +52,7 @@ class NetworkManager {
     roomId: string,
     playerId: string,
     playerName: string,
-    serverUrl: string = 'http://localhost:3001'
+    serverUrl: string = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001'
   ): void {
     // 1. STRICT CHECK: Prevent duplicate connections - early return if already connected
     if (this.socket?.connected) {

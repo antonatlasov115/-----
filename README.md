@@ -42,6 +42,23 @@ Then open `http://localhost:5173` and click **"Online Multiplayer"**
 
 📖 **Detailed multiplayer setup**: See [MULTIPLAYER_SETUP.md](MULTIPLAYER_SETUP.md)
 
+## 🌐 Production Deployment
+
+### Frontend (Vercel)
+Frontend is automatically deployed from GitHub to Vercel.
+
+### Backend (Render.com / Railway / Fly.io)
+Multiplayer server needs to be deployed separately to a platform that supports WebSocket.
+
+📖 **Deployment guide**: See [DEPLOYMENT.md](DEPLOYMENT.md)
+
+**Quick setup:**
+1. Deploy server to Render.com (free tier)
+2. Get server URL: `https://your-server.onrender.com`
+3. Add environment variable in Vercel:
+   - `VITE_SERVER_URL` = `https://your-server.onrender.com`
+4. Redeploy frontend
+
 ## Architecture Principles
 
 ### 🎯 Config-Driven Design
