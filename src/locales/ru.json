@@ -1,0 +1,75 @@
+{
+  "app": {
+    "title": "Сонор"
+  },
+  "gameMode": {
+    "title": "Режим игры",
+    "singlePlayer": "Одиночная игра",
+    "hotseat": "Вдвоем",
+    "onlineMultiplayer": "Онлайн мультиплеер",
+    "disconnect": "Отключиться"
+  },
+  "playerRole": {
+    "title": "Играть за",
+    "chaser": "Преследователь (Красный)",
+    "runner": "Убегающий (Синий)"
+  },
+  "gameInfo": {
+    "turn": "Ход",
+    "phase": "Фаза"
+  },
+  "gamePhase": {
+    "idle": "Ожидание",
+    "chaserTurn": "Ход преследователя",
+    "runnerTurn": "Ход убегающих",
+    "chaserSelecting": "Преследователь выбирает ход",
+    "runnerSelecting": "Убегающий выбирает ход",
+    "gameOver": "Игра окончена"
+  },
+  "score": {
+    "chaser": "Преследователь",
+    "runner": "Убегающие"
+  },
+  "controls": {
+    "resetGame": "Новая игра"
+  },
+  "gameOver": {
+    "title": "Игра окончена!",
+    "chaserWins": "Преследователь победил!"
+  },
+  "network": {
+    "status": "Статус",
+    "room": "Комната",
+    "yourRole": "Ваша роль",
+    "connected": "Подключено",
+    "connecting": "Подключение...",
+    "disconnected": "Отключено",
+    "chaserRole": "🔴 Преследователь",
+    "runnerRole": "🔵 Убегающий"
+  },
+  "onlineLobby": {
+    "title": "Онлайн мультиплеер",
+    "createRoom": "Создать новую комнату",
+    "or": "ИЛИ",
+    "joinRoom": "Присоединиться к существующей комнате",
+    "joinRoomLabel": "Присоединиться к комнате",
+    "roomIdPlaceholder": "Введите ID комнаты (например, ABC123)",
+    "joinButton": "Присоединиться",
+    "yourRoomId": "ID вашей комнаты:",
+    "shareId": "Поделитесь этим ID с оппонентом",
+    "yourPlayerId": "Ваш ID игрока:",
+    "connectButton": "Подключиться к серверу",
+    "cancel": "Отмена",
+    "note": "Примечание: Требуется Socket.io сервер на localhost:3001"
+  },
+  "errors": {
+    "enterRoomId": "Пожалуйста, введите ID комнаты",
+    "roomIdRequired": "ID комнаты и ID игрока обязательны",
+    "cannotSelectAI": "Нельзя выбрать фишки ИИ",
+    "cannotSelectOpponent": "Нельзя выбрать фишки оппонента в онлайн режиме",
+    "invalidSelection": "Неверный выбор фишки",
+    "notYourTurn": "Не ход этого типа фишек",
+    "alreadyMoved": "Эта фишка уже ходила в этом ходу",
+    "invalidMove": "Неверный ход"
+  }
+}

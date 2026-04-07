@@ -1,0 +1,75 @@
+{
+  "app": {
+    "title": "Сонор"
+  },
+  "gameMode": {
+    "title": "Оонньуу көрүҥэ",
+    "singlePlayer": "Биир оонньооччу",
+    "hotseat": "Икки оонньооччу",
+    "onlineMultiplayer": "Онлайн оонньуу",
+    "disconnect": "Арахсыы"
+  },
+  "playerRole": {
+    "title": "Оруол",
+    "chaser": "бөрө (Кыһыл)",
+    "runner": "куобах (Күөх)"
+  },
+  "gameInfo": {
+    "turn": "Хаамыы",
+    "phase": "Түһүмэх"
+  },
+  "gamePhase": {
+    "idle": "Күүтүү",
+    "chaserTurn": "бөрө хаамыыта",
+    "runnerTurn": "куобах хаамыылара",
+    "chaserSelecting": "Эккирэтээччи талар",
+    "runnerSelecting": "Куотааччы талар",
+    "gameOver": "Оонньуу түмүктэннэ"
+  },
+  "score": {
+    "chaser": "бөрө",
+    "runner": "куобах"
+  },
+  "controls": {
+    "resetGame": "Саҥа оонньуу"
+  },
+  "gameOver": {
+    "title": "Оонньуу түмүктэннэ!",
+    "chaserWins": "Эккирэтээччи кыайда!"
+  },
+  "network": {
+    "status": "Статус",
+    "room": "Хос",
+    "yourRole": "Эн оруолуҥ",
+    "connected": "Холбонно",
+    "connecting": "Холбоно сатыыр...",
+    "disconnected": "Арахсыбыт",
+    "chaserRole": "🔴 Эккирэтээччи",
+    "runnerRole": "🔵 Куотааччы"
+  },
+  "onlineLobby": {
+    "title": "Онлайн оонньуу",
+    "createRoom": "Саҥа хоһу оҥор",
+    "or": "ЭБЭТЭР",
+    "joinRoom": "Баар хоско киир",
+    "joinRoomLabel": "Хоско киирии",
+    "roomIdPlaceholder": "Хос ID-тын киллэр (холобур, ABC123)",
+    "joinButton": "Киир",
+    "yourRoomId": "Эн хоһуҥ ID-та:",
+    "shareId": "Бу ID-ны утарылаһааччыгар биэр",
+    "yourPlayerId": "Эн оонньооччу ID-ҥ:",
+    "connectButton": "Сервергэ холбон",
+    "cancel": "Төнүн",
+    "note": "Биллэрии: Socket.io сервер localhost:3001 үлэлиэхтээх"
+  },
+  "errors": {
+    "enterRoomId": "Баһаалыста, хос ID-тын киллэр",
+    "roomIdRequired": "Хос ID-та уонна Оонньооччу ID-та наада",
+    "cannotSelectAI": "ИИ (AI) фишкатын талар сатаммат",
+    "cannotSelectOpponent": "Онлайн оонньууга утарылаһааччы фишкатын талар сатаммат",
+    "invalidSelection": "Сыыһа талыы",
+    "notYourTurn": "Билигин бу фишка хаамар кэмэ буолбатах",
+    "alreadyMoved": "Бу фишка бу түһүмэххэ хаампыта",
+    "invalidMove": "Сыыһа хаамыы"
+  }
+}

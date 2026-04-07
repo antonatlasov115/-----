@@ -1,0 +1,81 @@
+.game-controls-container {
+  padding: 20px;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  max-width: 400px;
+  color: #F5E6D3;
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+  .game-controls-container {
+    padding: 10px;
+    max-width: 100%;
+  }
+  
+  .game-controls-title {
+    font-size: 24px !important;
+    margin-bottom: 10px !important;
+  }
+  
+  .game-controls-section {
+    padding: 10px !important;
+    margin-bottom: 12px !important;
+  }
+  
+  .game-controls-section-title {
+    font-size: 13px !important;
+    margin-bottom: 8px !important;
+  }
+  
+  .game-controls-button-group button {
+    padding: 10px !important;
+    font-size: 13px !important;
+  }
+  
+  .game-controls-score-board {
+    padding: 12px !important;
+    margin-bottom: 15px !important;
+  }
+  
+  .game-controls-score-value {
+    font-size: 24px !important;
+  }
+  
+  .game-controls-score-label {
+    font-size: 12px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-controls-container {
+    padding: 8px;
+  }
+  
+  .game-controls-title {
+    font-size: 20px !important;
+    margin-bottom: 8px !important;
+  }
+  
+  .game-controls-section {
+    padding: 8px !important;
+    margin-bottom: 10px !important;
+  }
+  
+  .game-controls-section-title {
+    font-size: 12px !important;
+  }
+  
+  .game-controls-lang-button {
+    padding: 4px 8px !important;
+    font-size: 10px !important;
+  }
+  
+  .game-controls-button-group button {
+    padding: 8px !important;
+    font-size: 12px !important;
+  }
+  
+  .game-controls-score-value {
+    font-size: 20px !important;
+  }
+}

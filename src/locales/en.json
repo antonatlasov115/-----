@@ -1,0 +1,75 @@
+{
+  "app": {
+    "title": "Sonor"
+  },
+  "gameMode": {
+    "title": "Game Mode",
+    "singlePlayer": "Single Player",
+    "hotseat": "Hotseat",
+    "onlineMultiplayer": "Online Multiplayer",
+    "disconnect": "Disconnect"
+  },
+  "playerRole": {
+    "title": "Play as",
+    "chaser": "Chaser (Red)",
+    "runner": "Runner (Blue)"
+  },
+  "gameInfo": {
+    "turn": "Turn",
+    "phase": "Phase"
+  },
+  "gamePhase": {
+    "idle": "Idle",
+    "chaserTurn": "Chaser's turn",
+    "runnerTurn": "Runners' turn",
+    "chaserSelecting": "Chaser selecting move",
+    "runnerSelecting": "Runner selecting move",
+    "gameOver": "Game Over"
+  },
+  "score": {
+    "chaser": "Chaser",
+    "runner": "Runners"
+  },
+  "controls": {
+    "resetGame": "New Game"
+  },
+  "gameOver": {
+    "title": "Game Over!",
+    "chaserWins": "Chaser wins!"
+  },
+  "network": {
+    "status": "Status",
+    "room": "Room",
+    "yourRole": "Your Role",
+    "connected": "Connected",
+    "connecting": "Connecting...",
+    "disconnected": "Disconnected",
+    "chaserRole": "🔴 Chaser",
+    "runnerRole": "🔵 Runner"
+  },
+  "onlineLobby": {
+    "title": "Online Multiplayer",
+    "createRoom": "Create a new room",
+    "or": "OR",
+    "joinRoom": "Join an existing room",
+    "joinRoomLabel": "Join Room",
+    "roomIdPlaceholder": "Enter Room ID (e.g., ABC123)",
+    "joinButton": "Join",
+    "yourRoomId": "Your Room ID:",
+    "shareId": "Share this ID with your opponent",
+    "yourPlayerId": "Your Player ID:",
+    "connectButton": "Connect to Server",
+    "cancel": "Cancel",
+    "note": "Note: Requires Socket.io server running on localhost:3001"
+  },
+  "errors": {
+    "enterRoomId": "Please enter a room ID",
+    "roomIdRequired": "Room ID and Player ID are required",
+    "cannotSelectAI": "Cannot select AI chips",
+    "cannotSelectOpponent": "Cannot select opponent's chips in online mode",
+    "invalidSelection": "Invalid chip selection",
+    "notYourTurn": "Not this chip type's turn",
+    "alreadyMoved": "This chip has already moved this turn",
+    "invalidMove": "Invalid move"
+  }
+}

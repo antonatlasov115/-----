@@ -1,0 +1,25 @@
+# Kiro AI assistant
+/.kiro
+
+# IDE
+/.vscode
+
+# Internal docs
+/MULTIPLAYER_SETUP.md
+
+# Dependencies
+node_modules/
+server/node_modules/
+
+# Build output
+dist/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+nul
+
+# Environment variables
+.env
+.env.local
