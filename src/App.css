@@ -63,15 +63,17 @@
   .app-container {
     flex-direction: column;
     height: 100vh;
+    height: 100dvh; /* Dynamic viewport height for mobile browsers */
     overflow: hidden;
     position: relative;
   }
-  
+
   .app-sidebar {
     width: 100%;
     border-right: none;
     border-bottom: 3px solid #4A3728;
-    max-height: 100vh;
+    max-height: 80vh;
+    max-height: 80dvh;
     overflow-y: auto;
     flex-shrink: 0;
     position: absolute;
@@ -79,25 +81,46 @@
     left: 0;
     z-index: 100;
     transition: transform 0.3s ease;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
   }
-  
+
   .app-sidebar.hidden {
     transform: translateY(-100%);
   }
-  
+
   .app-game-area {
     flex: 1;
-    padding: 5px;
+    padding: 0;
     min-height: 0;
     overflow: hidden;
     width: 100%;
     height: 100vh;
+    height: 100dvh;
+    position: relative;
   }
 }
 
 /* Small mobile */
 @media (max-width: 480px) {
   .app-game-area {
-    padding: 2px;
+    padding: 0;
+  }
+
+  .app-sidebar {
+    max-height: 70vh;
+    max-height: 70dvh;
+  }
+}
+
+/* Landscape mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .app-sidebar {
+    max-height: 90vh;
+    max-height: 90dvh;
+  }
+
+  .app-game-area {
+    height: 100vh;
+    height: 100dvh;
   }
 }

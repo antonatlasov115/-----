@@ -34,13 +34,15 @@ export const useViewportSize = (config: ViewportConfig = {}): ViewportSize => {
   useEffect(() => {
     const calculateSize = () => {
       const isMobile = window.innerWidth <= mobileBreakpoint;
-      
+
       let width: number;
       let height: number;
 
       if (isMobile) {
-        width = window.innerWidth - mobilePadding;
-        height = window.innerHeight - mobilePadding;
+        // Use smaller padding on mobile for more game area
+        const effectivePadding = Math.min(mobilePadding, 40);
+        width = window.innerWidth - effectivePadding;
+        height = window.innerHeight - effectivePadding;
       } else {
         width = window.innerWidth - sidebarWidth - desktopPadding;
         height = window.innerHeight - desktopPadding;
@@ -54,9 +56,22 @@ export const useViewportSize = (config: ViewportConfig = {}): ViewportSize => {
     };
 
     calculateSize();
-    window.addEventListener('resize', calculateSize);
-    
-    return () => window.removeEventListener('resize', calculateSize);
+
+    // Debounce resize for better performance
+    let resizeTimer: NodeJS.Timeout;
+    const debouncedResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(calculateSize, 100);
+    };
+
+    window.addEventListener('resize', debouncedResize);
+    window.addEventListener('orientationchange', calculateSize);
+
+    return () => {
+      window.removeEventListener('resize', debouncedResize);
+      window.removeEventListener('orientationchange', calculateSize);
+      clearTimeout(resizeTimer);
+    };
   }, [sidebarWidth, mobileBreakpoint, mobilePadding, desktopPadding]);
 
   return viewportSize;

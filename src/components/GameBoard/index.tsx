@@ -36,6 +36,8 @@ export const GameBoard: React.FC = () => {
   const [zoom, setZoom] = useState(1);
   const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
   const stageRef = React.useRef<any>(null);
+  const [lastTouchDistance, setLastTouchDistance] = useState<number | null>(null);
+  const [lastTap, setLastTap] = useState<number>(0);
 
   // Calculate scale from viewport
   const scaleX = viewport.width / GAME_CONFIG.board.width;
@@ -64,8 +66,8 @@ export const GameBoard: React.FC = () => {
     const pointer = stage.getPointerPosition();
 
     const mousePointTo = {
-      x: (pointer.x - dragPosition.x) / oldZoom,
-      y: (pointer.y - dragPosition.y) / oldZoom,
+      x: (pointer.x - dragPosition.x) / (scale * oldZoom),
+      y: (pointer.y - dragPosition.y) / (scale * oldZoom),
     };
 
     const direction = e.evt.deltaY > 0 ? -1 : 1;
@@ -73,15 +75,133 @@ export const GameBoard: React.FC = () => {
     const newZoom = direction > 0 ? oldZoom * scaleBy : oldZoom / scaleBy;
 
     // Limit zoom range
-    const clampedZoom = Math.max(0.5, Math.min(3, newZoom));
+    const clampedZoom = Math.max(0.5, Math.min(5, newZoom));
     setZoom(clampedZoom);
 
     const newPos = {
-      x: pointer.x - mousePointTo.x * clampedZoom,
-      y: pointer.y - mousePointTo.y * clampedZoom,
+      x: pointer.x - mousePointTo.x * scale * clampedZoom,
+      y: pointer.y - mousePointTo.y * scale * clampedZoom,
     };
 
     setDragPosition(newPos);
+  };
+
+  // Get distance between two touch points
+  const getTouchDistance = (touch1: Touch, touch2: Touch) => {
+    const dx = touch1.clientX - touch2.clientX;
+    const dy = touch1.clientY - touch2.clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+
+  // Handle pinch-to-zoom
+  const handleTouchMove = (e: any) => {
+    const evt = e.evt;
+
+    if (evt.touches.length === 2) {
+      // Pinch zoom - only when no phantom chip
+      if (phantomChip) return;
+
+      evt.preventDefault();
+
+      const touch1 = evt.touches[0];
+      const touch2 = evt.touches[1];
+      const distance = getTouchDistance(touch1, touch2);
+
+      if (lastTouchDistance !== null) {
+        const stage = stageRef.current;
+        if (!stage) return;
+
+        const oldZoom = zoom;
+        const scaleChange = distance / lastTouchDistance;
+        const newZoom = oldZoom * scaleChange;
+
+        // Limit zoom range
+        const clampedZoom = Math.max(0.5, Math.min(5, newZoom));
+        setZoom(clampedZoom);
+
+        // Center zoom between two fingers
+        const centerX = (touch1.clientX + touch2.clientX) / 2;
+        const centerY = (touch1.clientY + touch2.clientY) / 2;
+
+        const mousePointTo = {
+          x: (centerX - dragPosition.x) / (scale * oldZoom),
+          y: (centerY - dragPosition.y) / (scale * oldZoom),
+        };
+
+        const newPos = {
+          x: centerX - mousePointTo.x * scale * clampedZoom,
+          y: centerY - mousePointTo.y * scale * clampedZoom,
+        };
+
+        setDragPosition(newPos);
+      }
+
+      setLastTouchDistance(distance);
+    } else if (phantomChip && evt.touches.length === 1) {
+      // Move phantom chip
+      handleStageTouchMove(e);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setLastTouchDistance(null);
+  };
+
+  // Handle double tap to zoom
+  const handleDoubleTap = (e: any) => {
+    // Don't zoom if phantom chip is active
+    if (phantomChip) return;
+
+    const now = Date.now();
+    const timeSinceLastTap = now - lastTap;
+
+    if (timeSinceLastTap < 300 && timeSinceLastTap > 0) {
+      // Double tap detected
+      const stage = stageRef.current;
+      if (!stage) return;
+
+      const pointer = stage.getPointerPosition();
+      const oldZoom = zoom;
+      const newZoom = oldZoom === 1 ? 2 : 1;
+
+      setZoom(newZoom);
+
+      if (newZoom > oldZoom) {
+        // Zoom in to tap point
+        const mousePointTo = {
+          x: (pointer.x - dragPosition.x) / (scale * oldZoom),
+          y: (pointer.y - dragPosition.y) / (scale * oldZoom),
+        };
+
+        const newPos = {
+          x: pointer.x - mousePointTo.x * scale * newZoom,
+          y: pointer.y - mousePointTo.y * scale * newZoom,
+        };
+
+        setDragPosition(newPos);
+      } else {
+        // Reset position when zooming out
+        setDragPosition({ x: 0, y: 0 });
+      }
+    }
+
+    setLastTap(now);
+  };
+
+  // Zoom controls
+  const handleZoomIn = () => {
+    const newZoom = Math.min(5, zoom * 1.3);
+    setZoom(newZoom);
+  };
+
+  const handleZoomOut = () => {
+    const newZoom = Math.max(0.5, zoom / 1.3);
+    setZoom(newZoom);
+  };
+
+  const handleZoomReset = () => {
+    setZoom(1);
+    setDragPosition({ x: 0, y: 0 });
   };
 
   const handleStageClick = (e: any) => {
@@ -155,10 +275,10 @@ export const GameBoard: React.FC = () => {
   };
 
   return (
-    <div 
-      style={{ 
-        width: '100%', 
-        height: '100%', 
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -180,9 +300,10 @@ export const GameBoard: React.FC = () => {
             setDragPosition({ x: e.target.x(), y: e.target.y() });
           }}
           onClick={handleStageClick}
-          onTap={handleStageClick}
+          onTap={handleDoubleTap}
           onMouseMove={handleStageMouseMove}
-          onTouchMove={handleStageTouchMove}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
           onContextMenu={handleStageRightClick}
           onWheel={handleWheel}
           style={{ touchAction: 'none' }}
@@ -236,12 +357,90 @@ export const GameBoard: React.FC = () => {
         {phantomChip && <PhantomChip phantomChip={phantomChip} />}
       </Layer>
     </Stage>
-      
+
+      {/* Zoom controls */}
+      {viewport.isMobile && (
+        <div style={{
+          position: 'absolute',
+          bottom: phantomChip ? '150px' : '100px',
+          right: '10px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '10px',
+          zIndex: 1000,
+          transition: 'bottom 0.3s ease',
+        }}>
+          <button
+            onClick={handleZoomIn}
+            style={{
+              width: '50px',
+              height: '50px',
+              fontSize: '24px',
+              fontWeight: 'bold',
+              background: 'linear-gradient(180deg, #8B7355 0%, #6B5644 100%)',
+              color: '#F5E6D3',
+              border: '3px solid #4A3728',
+              borderRadius: '50%',
+              cursor: 'pointer',
+              boxShadow: '0 4px 8px rgba(0,0,0,0.4)',
+              touchAction: 'manipulation',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            +
+          </button>
+          <button
+            onClick={handleZoomOut}
+            style={{
+              width: '50px',
+              height: '50px',
+              fontSize: '24px',
+              fontWeight: 'bold',
+              background: 'linear-gradient(180deg, #8B7355 0%, #6B5644 100%)',
+              color: '#F5E6D3',
+              border: '3px solid #4A3728',
+              borderRadius: '50%',
+              cursor: 'pointer',
+              boxShadow: '0 4px 8px rgba(0,0,0,0.4)',
+              touchAction: 'manipulation',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            −
+          </button>
+          <button
+            onClick={handleZoomReset}
+            style={{
+              width: '50px',
+              height: '50px',
+              fontSize: '16px',
+              fontWeight: 'bold',
+              background: 'linear-gradient(180deg, #8B7355 0%, #6B5644 100%)',
+              color: '#F5E6D3',
+              border: '3px solid #4A3728',
+              borderRadius: '50%',
+              cursor: 'pointer',
+              boxShadow: '0 4px 8px rgba(0,0,0,0.4)',
+              touchAction: 'manipulation',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            ⊙
+          </button>
+        </div>
+      )}
+
       {/* Mobile control buttons */}
       {viewport.isMobile && phantomChip && (
         <div style={{
           position: 'absolute',
-          bottom: '20px',
+          bottom: '80px',
           left: '50%',
           transform: 'translateX(-50%)',
           display: 'flex',

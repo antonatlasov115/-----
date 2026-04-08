@@ -16,23 +16,25 @@ import './GameControls.css';
 export const GameControls: React.FC = () => {
   const t = useTranslation();
   const { locale, setLocale } = useLocale();
-  const { 
-    phase, 
-    score, 
-    turn, 
-    mode, 
-    playerRole, 
+  const {
+    phase,
+    score,
+    turn,
+    mode,
+    playerRole,
     networkStatus,
     roomId,
     playerName,
     opponentName,
-    resetGame, 
-    initializeGame, 
+    soundEnabled,
+    resetGame,
+    initializeGame,
     executeAITurn,
     setGameMode,
     setPlayerRole,
     connectToRoom,
     disconnectFromRoom,
+    toggleSound,
   } = useGameStore();
 
   const [showOnlineLobby, setShowOnlineLobby] = useState(false);
@@ -181,6 +183,25 @@ export const GameControls: React.FC = () => {
             }}
           >
             САХ
+          </button>
+          <button
+            style={{
+              ...styles.langButton,
+              ...(soundEnabled ? styles.langButtonActive : {}),
+            }}
+            className="game-controls-lang-button"
+            onClick={toggleSound}
+            title={soundEnabled ? 'Выключить звук' : 'Включить звук'}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.filter = 'brightness(0.95)';
+              e.currentTarget.style.transform = 'translateY(-1px)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.filter = 'brightness(1)';
+              e.currentTarget.style.transform = 'translateY(0)';
+            }}
+          >
+            {soundEnabled ? '🔊' : '🔇'}
           </button>
         </div>
       </div>

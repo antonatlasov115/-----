@@ -15,6 +15,7 @@ import {
 } from '../engine';
 import { networkManager } from '../network/socket';
 import { t } from '../utils/i18n';
+import { soundManager } from '../utils/sounds';
 
 /**
  * ZUSTAND STORE - Thin Client Layer
@@ -35,12 +36,16 @@ interface GameStore extends GameState {
   // Score animation state
   scoreAnimation: ScoreAnimationData | null;
   clearScoreAnimation: () => void;
-  
+
   // Player name
   playerName: string | null;
   setPlayerName: (name: string) => void;
   opponentName: string | null;
-  
+
+  // Sound control
+  soundEnabled: boolean;
+  toggleSound: () => void;
+
   // Actions
   initializeGame: () => void;
   selectChip: (chipId: string) => void;
@@ -117,6 +122,7 @@ const initialStoreState = {
   scoreAnimation: null as ScoreAnimationData | null,
   playerName: null as string | null,
   opponentName: null as string | null,
+  soundEnabled: soundManager.isEnabled(),
 };
 
 export const useGameStore = create<GameStore>((set, get) => ({
@@ -134,6 +140,15 @@ export const useGameStore = create<GameStore>((set, get) => ({
    */
   setPlayerName: (name: string) => {
     set({ playerName: name });
+  },
+
+  /**
+   * Toggle sound on/off
+   */
+  toggleSound: () => {
+    const newState = !soundManager.isEnabled();
+    soundManager.setEnabled(newState);
+    set({ soundEnabled: newState });
   },
 
   /**
@@ -386,6 +401,14 @@ export const useGameStore = create<GameStore>((set, get) => ({
     // Send move to network if in online multiplayer mode (before clearing phantomChip)
     if (state.mode === GameMode.ONLINE_MULTIPLAYER && state.networkStatus === 'connected') {
       networkManager.sendMove(state.selectedChipId, state.phantomChip!.position);
+    }
+
+    // Play walk sound
+    soundManager.play('walk');
+
+    // Play win sound if game is over
+    if (gameOver) {
+      setTimeout(() => soundManager.play('win'), 300);
     }
 
     set({
