@@ -26,6 +26,7 @@ class NetworkManager {
   private opponentNameCallbacks: OpponentNameCallback[] = [];
   private currentRoomId: string | null = null;
   private currentPlayerId: string | null = null;
+  private currentPlayerName: string | null = null;
 
   private constructor() {
     // Private constructor for singleton
@@ -70,13 +71,16 @@ class NetworkManager {
 
     this.currentRoomId = roomId;
     this.currentPlayerId = playerId;
+    this.currentPlayerName = playerName;
 
     // Initialize socket connection
     this.socket = io(serverUrl, {
       transports: ['websocket'],
       reconnection: true,
-      reconnectionAttempts: 5,
+      reconnectionAttempts: 10,
       reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      timeout: 20000,
     });
 
     // Setup event listeners
@@ -216,12 +220,32 @@ class NetworkManager {
     this.socket.on('connect', () => {
       console.log('Connected to game server');
       this.notifyConnectionCallbacks('connected');
+
+      // Auto-rejoin room on reconnect
+      if (this.currentRoomId && this.currentPlayerId && this.currentPlayerName) {
+        console.log('Reconnecting to room:', this.currentRoomId);
+        this.socket?.emit('join-room', {
+          roomId: this.currentRoomId,
+          playerId: this.currentPlayerId,
+          playerName: this.currentPlayerName
+        });
+      }
     });
 
     // Connection lost
-    this.socket.on('disconnect', () => {
-      console.log('Disconnected from game server');
+    this.socket.on('disconnect', (reason) => {
+      console.log('Disconnected from game server:', reason);
       this.notifyConnectionCallbacks('disconnected');
+    });
+
+    // Reconnecting
+    this.socket.on('reconnect_attempt', (attemptNumber) => {
+      console.log('Reconnection attempt:', attemptNumber);
+    });
+
+    // Reconnected successfully
+    this.socket.on('reconnect', (attemptNumber) => {
+      console.log('Reconnected after', attemptNumber, 'attempts');
     });
 
     // Opponent made a move

@@ -214,9 +214,11 @@ export const GameControls: React.FC = () => {
             style={{
               ...styles.modeButton,
               ...(mode === GameMode.SINGLE_PLAYER ? styles.modeButtonActive : {}),
+              ...(mode === GameMode.ONLINE_MULTIPLAYER && networkStatus === 'connected' ? styles.modeButtonDisabled : {}),
             }}
             className="game-controls-mode-button"
             onClick={() => setGameMode(GameMode.SINGLE_PLAYER)}
+            disabled={mode === GameMode.ONLINE_MULTIPLAYER && networkStatus === 'connected'}
           >
             {t('gameMode.singlePlayer')}
           </button>
@@ -224,9 +226,11 @@ export const GameControls: React.FC = () => {
             style={{
               ...styles.modeButton,
               ...(mode === GameMode.HOTSEAT ? styles.modeButtonActive : {}),
+              ...(mode === GameMode.ONLINE_MULTIPLAYER && networkStatus === 'connected' ? styles.modeButtonDisabled : {}),
             }}
             className="game-controls-mode-button"
             onClick={() => setGameMode(GameMode.HOTSEAT)}
+            disabled={mode === GameMode.ONLINE_MULTIPLAYER && networkStatus === 'connected'}
           >
             {t('gameMode.hotseat')}
           </button>
@@ -534,8 +538,8 @@ const styles: Record<string, React.CSSProperties> = {
   },
   modeButtonActive: {
     background: `
-      linear-gradient(180deg, 
-        #E8D5B8 0%, 
+      linear-gradient(180deg,
+        #E8D5B8 0%,
         #D4A574 5%,
         #C89860 10%,
         #D4A574 15%,
@@ -566,6 +570,11 @@ const styles: Record<string, React.CSSProperties> = {
       0 0 0 1px rgba(139,111,71,0.4)
     `,
     textShadow: '0 1px 1px rgba(0,0,0,0.4)',
+  },
+  modeButtonDisabled: {
+    opacity: 0.5,
+    cursor: 'not-allowed',
+    pointerEvents: 'none',
   },
   info: {
     marginBottom: '20px',

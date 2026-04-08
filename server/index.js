@@ -54,12 +54,14 @@ io.on('connection', (socket) => {
     let playerRole = null;
     
     if (!existingPlayer) {
-      // Assign role based on join order
-      // First player = CHASER, Second player = RUNNER
+      // Assign role randomly for first player, opposite for second
       if (room.players.length === 0) {
-        playerRole = 'CHASER';
+        // First player gets random role
+        playerRole = Math.random() < 0.5 ? 'CHASER' : 'RUNNER';
       } else if (room.players.length === 1) {
-        playerRole = 'RUNNER';
+        // Second player gets opposite role
+        const firstPlayerRole = room.players[0].role;
+        playerRole = firstPlayerRole === 'CHASER' ? 'RUNNER' : 'CHASER';
       } else {
         // Room is full
         socket.emit('error', 'Room is full (max 2 players)');
