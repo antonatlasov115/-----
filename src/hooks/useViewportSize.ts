@@ -58,7 +58,7 @@ export const useViewportSize = (config: ViewportConfig = {}): ViewportSize => {
     calculateSize();
 
     // Debounce resize for better performance
-    let resizeTimer: NodeJS.Timeout;
+    let resizeTimer: ReturnType<typeof setTimeout>;
     const debouncedResize = () => {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(calculateSize, 100);

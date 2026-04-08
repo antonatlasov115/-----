@@ -148,7 +148,7 @@ export const GameBoard: React.FC = () => {
   };
 
   // Handle double tap to zoom
-  const handleDoubleTap = (e: any) => {
+  const handleDoubleTap = () => {
     // Don't zoom if phantom chip is active
     if (phantomChip) return;
 
