@@ -255,10 +255,12 @@ class NetworkManager {
     });
 
     // Room joined successfully
-    this.socket.on('room-joined', (data: { roomId: string; playerId: string; role: string; opponentName?: string }) => {
+    this.socket.on('room-joined', (data: { roomId: string; playerId: string; role: string; opponentName?: string; isReconnecting?: boolean }) => {
       console.log('Successfully joined room:', data);
       console.log('Role received from server:', data.role);
       console.log('Role type:', typeof data.role);
+      console.log('Is reconnecting:', data.isReconnecting);
+
       // Notify role callbacks
       if (data.role === 'CHASER' || data.role === 'RUNNER') {
         const chipTypeRole = data.role as ChipType;
@@ -271,6 +273,12 @@ class NetworkManager {
       if (data.opponentName) {
         this.notifyOpponentNameCallbacks(data.opponentName);
       }
+    });
+
+    // Player reconnected
+    this.socket.on('player-reconnected', (data: { playerId: string; playerName: string }) => {
+      console.log('Player reconnected:', data);
+      // Could show a toast notification here
     });
 
     // Player joined room

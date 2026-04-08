@@ -50,10 +50,12 @@ io.on('connection', (socket) => {
     // Store player info
     const room = getRoomInfo(roomId);
     const existingPlayer = room.players.find((p) => p.playerId === playerId);
-    
+
     let playerRole = null;
-    
+    let isReconnecting = false;
+
     if (!existingPlayer) {
+      // New player joining
       // Assign role randomly for first player, opposite for second
       if (room.players.length === 0) {
         // First player gets random role
@@ -67,7 +69,7 @@ io.on('connection', (socket) => {
         socket.emit('error', 'Room is full (max 2 players)');
         return;
       }
-      
+
       room.players.push({
         playerId,
         playerName: playerName || 'Игрок',
@@ -75,33 +77,46 @@ io.on('connection', (socket) => {
         role: playerRole,
         connectedAt: new Date().toISOString(),
       });
+
+      console.log(`[${new Date().toISOString()}] New player ${playerId} (${playerName}) assigned role: ${playerRole}`);
     } else {
-      // Update socket ID and name for reconnecting player
+      // Reconnecting player
+      isReconnecting = true;
       existingPlayer.socketId = socket.id;
       existingPlayer.playerName = playerName || existingPlayer.playerName;
       playerRole = existingPlayer.role;
+
+      console.log(`[${new Date().toISOString()}] Player ${playerId} (${playerName}) reconnected with role: ${playerRole}`);
     }
 
     // Get opponent info
     const opponent = room.players.find((p) => p.playerId !== playerId);
 
     // Notify player they joined successfully with their role and opponent info
-    socket.emit('room-joined', { 
-      roomId, 
-      playerId, 
+    socket.emit('room-joined', {
+      roomId,
+      playerId,
       role: playerRole,
       opponentName: opponent ? opponent.playerName : null,
+      isReconnecting,
     });
 
-    // Notify other players in room about new player
-    socket.to(roomId).emit('player-joined', { 
-      playerId, 
-      playerName: playerName || 'Игрок',
-      role: playerRole,
-    });
+    // Notify other players in room about new player (only if not reconnecting)
+    if (!isReconnecting) {
+      socket.to(roomId).emit('player-joined', {
+        playerId,
+        playerName: playerName || 'Игрок',
+        role: playerRole,
+      });
+    } else {
+      // Notify opponent about reconnection
+      socket.to(roomId).emit('player-reconnected', {
+        playerId,
+        playerName: playerName || 'Игрок',
+      });
+    }
 
     console.log(`[${new Date().toISOString()}] Room ${roomId} now has ${room.players.length} player(s)`);
-    console.log(`[${new Date().toISOString()}] Player ${playerId} (${playerName}) assigned role: ${playerRole}`);
   });
 
   // Player makes a move

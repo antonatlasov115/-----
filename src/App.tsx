@@ -6,6 +6,7 @@ import { PlayerSetupModal } from './components/PlayerSetupModal';
 import { GameOverModal } from './components/GameOverModal';
 import { useGameStore } from './store/useGameStore';
 import { GamePhase, ChipType, GameMode } from './types';
+import { sessionManager } from './utils/sessionManager';
 import './App.css';
 
 /**
@@ -16,10 +17,10 @@ import './App.css';
  */
 
 const App: React.FC = () => {
-  const { 
-    scoreAnimation, 
-    clearScoreAnimation, 
-    playerName, 
+  const {
+    scoreAnimation,
+    clearScoreAnimation,
+    playerName,
     setPlayerName,
     opponentName,
     phase,
@@ -29,18 +30,20 @@ const App: React.FC = () => {
     mode,
     resetGame,
     initializeGame,
+    connectToRoom,
   } = useGameStore();
   const [sidebarVisible, setSidebarVisible] = React.useState(true);
   const [isMobile, setIsMobile] = React.useState(false);
+  const [showReconnectToast, setShowReconnectToast] = React.useState(false);
 
   React.useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
-    
+
     checkMobile();
     window.addEventListener('resize', checkMobile);
-    
+
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
@@ -51,6 +54,21 @@ const App: React.FC = () => {
       setPlayerName(savedName);
     }
   }, [setPlayerName]);
+
+  // Auto-restore session on page reload
+  React.useEffect(() => {
+    const session = sessionManager.getSession();
+    if (session && playerName) {
+      console.log('Restoring session:', session);
+      setShowReconnectToast(true);
+
+      // Auto-reconnect after short delay
+      setTimeout(() => {
+        connectToRoom(session.roomId, session.playerId);
+        setShowReconnectToast(false);
+      }, 2000);
+    }
+  }, [playerName, connectToRoom]);
 
   const handlePlayerStart = (name: string) => {
     setPlayerName(name);
@@ -107,6 +125,25 @@ const App: React.FC = () => {
 
   return (
     <div className="app-container">
+      {showReconnectToast && (
+        <div style={{
+          position: 'fixed',
+          top: '20px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 10000,
+          padding: '16px 24px',
+          background: 'linear-gradient(180deg, #4CAF50 0%, #45a049 100%)',
+          color: 'white',
+          borderRadius: '8px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+          fontSize: '16px',
+          fontWeight: 'bold',
+          animation: 'slideDown 0.3s ease',
+        }}>
+          🔄 Восстановление соединения...
+        </div>
+      )}
       <div className={`app-sidebar ${!sidebarVisible ? 'hidden' : ''}`}>
         <GameControls />
       </div>

@@ -16,6 +16,7 @@ import {
 import { networkManager } from '../network/socket';
 import { t } from '../utils/i18n';
 import { soundManager } from '../utils/sounds';
+import { sessionManager } from '../utils/sessionManager';
 
 /**
  * ZUSTAND STORE - Thin Client Layer
@@ -551,6 +552,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
     // Connect to server with player name
     networkManager.connect(roomId, playerId, playerName);
+
+    // Save session for auto-restore on page reload
+    sessionManager.saveSession(roomId, playerId, playerName);
   },
 
   /**
@@ -559,9 +563,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
   disconnectFromRoom: () => {
     networkManager.disconnect();
     networkManager.removeAllCallbacks();
-    set({ 
-      networkStatus: 'disconnected', 
-      roomId: null, 
+
+    // Clear saved session
+    sessionManager.clearSession();
+
+    set({
+      networkStatus: 'disconnected',
+      roomId: null,
       playerId: null,
       opponentName: null,
       mode: GameMode.HOTSEAT, // Fallback to hotseat
